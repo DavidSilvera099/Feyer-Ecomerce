@@ -106,7 +106,7 @@ const ProductPage = () => {
               {product.name}
             </h1>
             <p className="text-xl font-light text-gray-600">
-              ${product.price.toFixed(2)}
+              ${parseFloat(product.price).toFixed(2)}
             </p>
             <p>Total: ${(product.price * quantity).toFixed(2)}</p>
           </div>
