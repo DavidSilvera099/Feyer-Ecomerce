@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "../components/products/product-card";
 import { Link } from "react-router";
 import { collection, getDocs, query } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../firebase/firebase";
 import { CiSearch, CiFilter } from "react-icons/ci";
 import { fetchProducts } from "../firebase/api/products";
 import SpinnerLoading from "../components/utils/SpinnerLoading";
