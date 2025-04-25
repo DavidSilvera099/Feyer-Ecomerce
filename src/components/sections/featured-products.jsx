@@ -39,17 +39,17 @@ const FeaturedProducts = () => {
   }
 
   return (
-    <div className="mx-auto py-8 my-10 flex flex-col gap-12">
-      <h2 className='text-4xl text-center text-[#1C2838]'>Productos destacados</h2>
+    <div className="mx-auto py-4 md:py-8 my-6 md:my-10 flex flex-col gap-6 md:gap-12 px-4 md:px-0">
+      <h2 className='text-2xl md:text-4xl text-center text-[#1C2838]'>Productos destacados</h2>
       <div className='flex justify-center'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6'>
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>
-      <div className='flex justify-center mt-6'>
-        <Link to='/products' className='bg-[#1C385C] text-white px-8 py-4 text-lg font-light uppercase w-fit'>Todos los productos</Link>
+      <div className='flex justify-center mt-4 md:mt-6'>
+        <Link to='/products' className='bg-[#1C385C] text-white px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-light uppercase w-fit'>Todos los productos</Link>
       </div>
     </div>
   );

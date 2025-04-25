@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "../components/products/product-card";
-import { Link } from "react-router";
 import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { CiSearch, CiFilter } from "react-icons/ci";
-import { fetchProducts } from "../firebase/api/products";
 import SpinnerLoading from "../components/utils/SpinnerLoading";
 
 
@@ -62,24 +60,24 @@ const Products = () => {
   }, [searchTerm, selectedCategory, products]);
 
   return (
-    <div className="mx-auto py-8 flex flex-col gap-12">
-      <div className="flex flex-col gap-4">
-        <h2 className='text-4xl text-center text-[#1C2838]'>Todos los Productos</h2>
+    <div className="mx-auto py-4 md:py-8 flex flex-col gap-6 md:gap-12 px-4 md:px-0">
+      <div className="flex flex-col gap-2 md:gap-4">
+        <h2 className='text-2xl md:text-4xl text-center text-[#1C2838]'>Todos los Productos</h2>
         {/* Barra de búsqueda y filtros */}
-        <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-4 justify-center items-center">
           <div className="relative w-full md:w-64">
             <input
               type="text"
               placeholder="Buscar productos..."
-              className="px-4 py-2 border w-full"
+              className="px-3 md:px-4 py-2 border w-full text-sm md:text-base"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <CiSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xl" />
+            <CiSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-lg md:text-xl" />
           </div>
           <div className="relative w-full md:w-fit">
             <select
-              className="px-2 py-2 pl-10 border w-full appearance-none"
+              className="px-2 md:px-4 py-2 pl-8 md:pl-10 border w-full appearance-none text-sm md:text-base"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
@@ -90,13 +88,13 @@ const Products = () => {
                 </option>
               ))}
             </select>
-            <CiFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl" />
+            <CiFilter className="absolute left-2 md:left-3 top-1/2 transform -translate-y-1/2 text-lg md:text-xl" />
           </div>
         </div>
       </div>
     
       <div className='flex justify-center'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6'>
           {loading ? (
             <SpinnerLoading />
           ) : filteredProducts.length > 0 ? (
@@ -104,7 +102,7 @@ const Products = () => {
               <ProductCard key={product.id} product={product} />
             ))
           ) : (
-            <p className="col-span-full text-center">No se encontraron productos</p>
+            <p className="col-span-full text-center text-base md:text-lg">No se encontraron productos</p>
           )}
         </div>
       </div>
