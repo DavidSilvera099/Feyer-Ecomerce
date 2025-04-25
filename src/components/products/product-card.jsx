@@ -1,8 +1,9 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const ProductCard = ({ product }) => {
   return (
-    <div className="bg-white overflow-hidden">
+    <Link to={`/products/${product.id}`} className="bg-white overflow-hidden cursor-pointer">
         <div className="relative">
             <img src={product.image} alt={product.name} className="w-100 h-full object-cover" loading="lazy" />
             {product.discount > 0 && (
@@ -24,7 +25,7 @@ const ProductCard = ({ product }) => {
           )}
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
 
