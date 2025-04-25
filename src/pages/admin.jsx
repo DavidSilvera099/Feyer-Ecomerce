@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db, auth } from '../firebase';
+import { db, auth } from '../firebase/firebase';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';

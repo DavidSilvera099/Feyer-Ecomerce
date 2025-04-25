@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, query, limit } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db } from '../../firebase/firebase';
 import ProductCard from '../products/product-card';
 import { Link } from 'react-router-dom';
 const FeaturedProducts = () => {

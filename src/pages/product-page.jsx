@@ -3,8 +3,8 @@ import { FaMinus } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import { HiShoppingBag } from "react-icons/hi2";
 import { useParams } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { fetchProduct } from "../firebase/api/products";
+import SpinnerLoading from "../components/utils/SpinnerLoading";
 
 const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
@@ -13,24 +13,7 @@ const ProductPage = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const docRef = doc(db, "products", id);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          setProduct(docSnap.data());
-        } else {
-          console.log("Producto no encontrado");
-        }
-      } catch (error) {
-        console.error("Error al obtener el producto:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
+    fetchProduct({setProduct, setLoading, id});
   }, [id]);
 
   const decreaseQuantity = () => {
@@ -71,15 +54,7 @@ const ProductPage = () => {
     console.log("Agregado al carrito:", productInfo);
   };
 
-
-  console.log(product)
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1C2838]"></div>
-      </div>
-    );
-  }
+  if (loading) return <SpinnerLoading />;
 
   if (!product) {
     return (

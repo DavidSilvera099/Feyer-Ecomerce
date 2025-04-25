@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../../firebase';
+import { auth, db } from '../../firebase/firebase';
 import { useNavigate, Link } from 'react-router-dom';
 import { doc, setDoc } from 'firebase/firestore';
 import registerImg from '../../assets/image-login.avif'
