@@ -54,7 +54,6 @@ const Header = () => {
                 <ul className='flex justify-between items-center gap-8 text-xl font-light'>
                     <li> <Link to="/">Inicio</Link></li>
                     <li> <Link to="/products">Productos</Link></li>
-                    <li> <Link to="/offers">Ofertas</Link></li>
                     {isAdmin && <li> <Link to="/admin">Administrador</Link></li>}
                 </ul>
             </nav>
