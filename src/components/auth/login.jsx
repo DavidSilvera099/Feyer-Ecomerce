@@ -38,6 +38,7 @@ const Login = () => {
           src={loginImg} 
           alt="Ganado" 
           className="w-full h-full object-cover"
+          loading="lazy"
         />
       </div>
 

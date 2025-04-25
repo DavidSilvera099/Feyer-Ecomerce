@@ -9,7 +9,7 @@ const HeroImage = () => {
         <a href='#' className='bg-[#1C385C] text-white px-8 py-4 text-lg font-light uppercase w-fit'>Comprar ahora</a>
       </div>
       <div className='w-1/2 max-w-[1000px] pr-12'>
-        <img src={heroImage} alt='hero-image' className='w-full h-full object-cover' />
+        <img src={heroImage} alt='hero-image' className='w-full h-full object-cover' loading="lazy" />
       </div>
     </div>
   )

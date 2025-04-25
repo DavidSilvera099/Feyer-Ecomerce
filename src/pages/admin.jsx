@@ -5,6 +5,7 @@ import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
 import { getDoc } from 'firebase/firestore';
+import Swal from 'sweetalert2';
 
 const Admin = () => {
   // Hooks que siempre se ejecutan
@@ -22,6 +23,22 @@ const Admin = () => {
     discount: '0'
   });
   const [editingId, setEditingId] = useState(null);
+
+  // Función para obtener productos
+  const fetchProducts = async () => {
+    if (isAdmin) {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'products'));
+        const productsList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setProducts(productsList);
+      } catch (error) {
+        console.error('Error al obtener productos:', error);
+      }
+    }
+  };
 
   // Verificación de admin
   useEffect(() => {
@@ -49,21 +66,6 @@ const Admin = () => {
 
   // Obtener productos solo si es admin
   useEffect(() => {
-    const fetchProducts = async () => {
-      if (isAdmin) {
-        try {
-          const querySnapshot = await getDocs(collection(db, 'products'));
-          const productsList = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-          setProducts(productsList);
-        } catch (error) {
-          console.error('Error al obtener productos:', error);
-        }
-      }
-    };
-
     fetchProducts();
   }, [isAdmin]);
 
@@ -101,9 +103,27 @@ const Admin = () => {
         const productRef = doc(db, 'products', editingId);
         await updateDoc(productRef, productData);
         setEditingId(null);
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Producto actualizado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#1C2838',
+          background: '#ffffff',
+          color: '#1C2838'
+        });
       } else {
         // Crear nuevo producto
         await addDoc(collection(db, 'products'), productData);
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Producto agregado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#1C2838',
+          background: '#ffffff',
+          color: '#1C2838'
+        });
       }
       setFormData({
         name: '',
@@ -117,17 +137,57 @@ const Admin = () => {
       fetchProducts();
     } catch (error) {
       console.error('Error al guardar producto:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'Error al guardar el producto',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#1C2838',
+        background: '#ffffff',
+        color: '#1C2838'
+      });
     }
   };
 
   // Eliminar producto
   const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esta acción",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#1C2838',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      background: '#ffffff',
+      color: '#1C2838'
+    });
+
+    if (result.isConfirmed) {
       try {
         await deleteDoc(doc(db, 'products', id));
         fetchProducts();
+        Swal.fire({
+          title: '¡Eliminado!',
+          text: 'El producto ha sido eliminado',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#1C2838',
+          background: '#ffffff',
+          color: '#1C2838'
+        });
       } catch (error) {
         console.error('Error al eliminar producto:', error);
+        Swal.fire({
+          title: 'Error',
+          text: 'Error al eliminar el producto',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#1C2838',
+          background: '#ffffff',
+          color: '#1C2838'
+        });
       }
     }
   };

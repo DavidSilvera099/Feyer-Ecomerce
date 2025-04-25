@@ -4,7 +4,7 @@ const ProductCard = ({ product }) => {
   return (
     <div className="bg-white overflow-hidden">
         <div className="relative">
-            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+            <img src={product.image} alt={product.name} className="w-100 h-full object-cover" loading="lazy" />
             {product.discount > 0 && (
                 <div className="absolute top-4 left-0 bg-[#1D1E20] text-white py-2 px-4">
                     <span className="text-md uppercase">descuento</span>
