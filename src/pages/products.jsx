@@ -30,7 +30,7 @@ const products = () => {
     }, []);
   
   return (
-    <div className="mx-auto py-8 my-10 flex flex-col gap-12">
+    <div className="mx-auto py-8  flex flex-col gap-12">
       <h2 className='text-4xl text-center text-[#1C2838]'>Todos los Productos</h2>
       <div className='flex justify-center'>
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
