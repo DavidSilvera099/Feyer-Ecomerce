@@ -4,7 +4,7 @@ import { IoBagOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
 import { Link } from 'react-router-dom';
-import { auth, db } from '../../firebase';
+import { auth, db } from '../../firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
