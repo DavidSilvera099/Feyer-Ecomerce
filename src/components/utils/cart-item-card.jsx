@@ -2,9 +2,8 @@ import React from 'react';
 import { FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
 
 const CartItemCard = ({ product, onUpdateQuantity, onRemove }) => {
-  const { name, price, image, quantity, discount, stock } = product;
-  const finalPrice = discount ? price * (1 - discount) : price;
-  const totalPrice = finalPrice * quantity;
+  const { name, price, image, quantity, stock } = product;
+  const totalPrice = price * quantity;
 
   return (
     <div className="flex items-center gap-4 p-4 border-b">

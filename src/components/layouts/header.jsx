@@ -4,7 +4,7 @@ import { IoBagOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
 import { HiMenuAlt3 } from "react-icons/hi";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { auth, db } from '../../firebase/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { signOut } from 'firebase/auth';
@@ -18,6 +18,7 @@ const Header = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { isCartOpen, openCart, closeCart } = useCart();
 
   useEffect(() => {
@@ -67,9 +68,35 @@ const Header = () => {
         {/* Menú de navegación */}
         <nav className={`${isMenuOpen ? 'block' : 'hidden'} md:block absolute md:relative top-full left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none z-50`}>
           <ul className='flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8 text-xl font-light p-4 md:p-0'>
-            <li><Link to="/" onClick={() => setIsMenuOpen(false)}>Inicio</Link></li>
-            <li><Link to="/products" onClick={() => setIsMenuOpen(false)}>Productos</Link></li>
-            {isAdmin && <li><Link to="/admin" onClick={() => setIsMenuOpen(false)}>Administrador</Link></li>}
+            <li>
+              <Link 
+                to="/" 
+                onClick={() => setIsMenuOpen(false)}
+                className={`pb-1 ${location.pathname === '/' ? 'border-b-2 border-[#1C385C]' : ''}`}
+              >
+                Inicio
+              </Link>
+            </li>
+            <li>
+              <Link 
+                to="/products" 
+                onClick={() => setIsMenuOpen(false)}
+                className={`pb-1 ${location.pathname.startsWith('/products') ? 'border-b-2 border-[#1C385C]' : ''}`}
+              >
+                Productos
+              </Link>
+            </li>
+            {isAdmin && (
+              <li>
+                <Link 
+                  to="/admin" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`pb-1 ${location.pathname.startsWith('/admin') ? 'border-b-2 border-[#1C385C]' : ''}`}
+                >
+                  Administrador
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
 
