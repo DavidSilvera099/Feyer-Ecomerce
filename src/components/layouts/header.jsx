@@ -10,12 +10,15 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
+import CartDrawer from '../sections/cart-drawer';
+import { useCart } from '../../context/CartContext';
 
 const Header = () => {
   const [user, loading] = useAuthState(auth);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { isCartOpen, openCart, closeCart } = useCart();
 
   useEffect(() => {
     const checkAdminStatus = async () => {
@@ -72,9 +75,12 @@ const Header = () => {
 
         <div className='hidden md:flex justify-between items-center gap-4'>
           {user && (
-            <Link to="/cart" className="text-3xl cursor-pointer">
+            <button 
+              onClick={openCart}
+              className="text-3xl cursor-pointer"
+            >
               <IoBagOutline />
-            </Link>
+            </button>
           )}
           {!user ? (
             <Link to="/login" className="text-2xl cursor-pointer">
@@ -90,9 +96,12 @@ const Header = () => {
         {/* Iconos para móvil */}
         <div className='md:hidden flex items-center gap-4'>
           {user && (
-            <Link to="/cart" className="text-2xl cursor-pointer">
+            <button 
+              onClick={openCart}
+              className="text-2xl cursor-pointer"
+            >
               <IoBagOutline />
-            </Link>
+            </button>
           )}
           {!user ? (
             <Link to="/login" className="text-xl cursor-pointer">
@@ -105,6 +114,12 @@ const Header = () => {
           )}
         </div>
       </div>
+
+      {/* Cart Drawer */}
+      <CartDrawer 
+        isOpen={isCartOpen} 
+        onClose={closeCart} 
+      />
     </header>
   )
 }
