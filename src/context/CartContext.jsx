@@ -1,14 +1,29 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  // Cargar items del localStorage al inicializar
+  const [cartItems, setCartItems] = useState(() => {
+    const savedCart = localStorage.getItem('cartItems');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // Guardar en localStorage cada vez que cambie cartItems
+  useEffect(() => {
+    try {
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    } catch (error) {
+      console.error('Error al guardar el carrito en localStorage:', error);
+    }
+  }, [cartItems]);
 
   const addToCart = (product) => {
     setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === product.id);
+      const existingItem = prevItems.find(item => 
+        item.id === product.id && item.quantity + product.quantity <= item.stock
+      );
       
       if (existingItem) {
         return prevItems.map(item =>
@@ -18,7 +33,9 @@ export const CartProvider = ({ children }) => {
         );
       }
       
-      return [...prevItems, product];
+      // Generar un ID único para el nuevo item
+      const uniqueId = `${product.id}-${Date.now()}`;
+      return [...prevItems, { ...product, cartItemId: uniqueId }];
     });
   };
 
@@ -27,7 +44,7 @@ export const CartProvider = ({ children }) => {
     
     setCartItems(prevItems =>
       prevItems.map(item =>
-        item.id === product.id
+        item.cartItemId === product.cartItemId
           ? { ...item, quantity: newQuantity }
           : item
       )
@@ -36,7 +53,7 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = (product) => {
     setCartItems(prevItems =>
-      prevItems.filter(item => item.id !== product.id)
+      prevItems.filter(item => item.cartItemId !== product.cartItemId)
     );
   };
 

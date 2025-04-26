@@ -2,7 +2,7 @@ import React from 'react';
 import { FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
 
 const CartItemCard = ({ product, onUpdateQuantity, onRemove }) => {
-  const { name, price, image, quantity, discount } = product;
+  const { name, price, image, quantity, discount, stock } = product;
   const finalPrice = discount ? price * (1 - discount) : price;
   const totalPrice = finalPrice * quantity;
 
@@ -33,7 +33,8 @@ const CartItemCard = ({ product, onUpdateQuantity, onRemove }) => {
           
           <button 
             onClick={() => onUpdateQuantity(product, quantity + 1)}
-            className="p-1 hover:bg-gray-100 rounded"
+            disabled={quantity >= stock}
+            className={`p-1 hover:bg-gray-100 rounded ${quantity >= stock ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <FaPlus size={12} />
           </button>

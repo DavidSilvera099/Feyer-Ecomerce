@@ -1,10 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { IoClose } from "react-icons/io5";
 import CartItemCard from '../utils/cart-item-card.jsx';
 import { useCart } from '../../context/CartContext';
+import { Link } from 'react-router-dom';
 
 const CartDrawer = ({ isOpen, onClose }) => {
   const { cartItems, updateQuantity, removeFromCart } = useCart();
+
+  // Controlar el scroll del body cuando el carrito está abierto
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    
+    // Limpiar el efecto cuando el componente se desmonte
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen]);
 
   // Calcular el total del carrito
   const total = cartItems.reduce(
@@ -15,14 +30,14 @@ const CartDrawer = ({ isOpen, onClose }) => {
   return (
     <>
       <div 
-        className={`fixed inset-0 bg-black transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-black transition-opacity duration-300 z-50 ${
           isOpen ? 'opacity-50' : 'opacity-0 pointer-events-none'
         }`}
         onClick={onClose}
       />
       
       <div 
-        className={`fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -43,7 +58,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
             ) : (
               cartItems.map(item => (
                 <CartItemCard
-                  key={item.id}
+                  key={item.cartItemId}
                   product={item}
                   onUpdateQuantity={updateQuantity}
                   onRemove={removeFromCart}
@@ -58,9 +73,9 @@ const CartDrawer = ({ isOpen, onClose }) => {
                 <span className="font-semibold">Total:</span>
                 <span className="font-semibold">${total.toFixed(2)}</span>
               </div>
-              <button className="w-full bg-black text-white py-2 rounded hover:bg-gray-800">
+              <Link to="/checkout" onClick={onClose} className="flex justify-center w-full bg-black text-white py-2 rounded hover:bg-gray-800">
                 Proceder al pago
-              </button>
+              </Link>
             </div>
           )}
         </div>

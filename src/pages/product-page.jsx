@@ -50,9 +50,10 @@ const ProductPage = () => {
       id: product.id,
       name: product.name,
       price: product.price,
-      discountPrice: product.discountPrice,
+      discount: product.discount || 0,
       image: product.image,
-      quantity: quantity
+      quantity: quantity,
+      stock: product.stock
     };
     
     addToCart(productInfo);
