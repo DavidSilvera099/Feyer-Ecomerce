@@ -17,7 +17,7 @@ const Admin = () => {
     name: '',
     price: '',
     description: '',
-    category: '',
+    category: 'Camisetas',
     image: '',
     stock: '',
     discount: '0'
@@ -93,9 +93,14 @@ const Admin = () => {
         : formData.price;
 
       const productData = {
-        ...formData,
+        name: formData.name,
         price: priceWithDiscount,
-        originalPrice: formData.price // Guardamos el precio original
+        originalPrice: formData.price,
+        description: formData.description,
+        category: formData.category,
+        image: formData.image,
+        stock: formData.stock,
+        discount: formData.discount
       };
 
       if (editingId) {
@@ -129,7 +134,7 @@ const Admin = () => {
         name: '',
         price: '',
         description: '',
-        category: '',
+        category: 'Camisetas',
         image: '',
         stock: '',
         discount: '0'
