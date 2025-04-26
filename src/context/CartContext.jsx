@@ -9,7 +9,6 @@ export const CartProvider = ({ children }) => {
   const addToCart = (product) => {
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
-      
       if (existingItem) {
         return prevItems.map(item =>
           item.id === product.id
@@ -39,6 +38,7 @@ export const CartProvider = ({ children }) => {
       prevItems.filter(item => item.id !== product.id)
     );
   };
+
 
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);

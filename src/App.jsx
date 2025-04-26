@@ -15,7 +15,6 @@ const Products = lazy(() => import("./pages/products"));
 const ProductPage = lazy(() => import("./pages/product-page"));
 
 // Importación de las páginas relacionadas con el carrito y el administrador
-const Cart = lazy(() => import("./pages/cart"));
 const Admin = lazy(() => import("./pages/admin"));
 
 const App = () => {
@@ -31,7 +30,6 @@ const App = () => {
             <Route index element={<Products />} />
             <Route path=":id" element={<ProductPage />} />
           </Route>
-          <Route path="/cart" element={<Cart />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
       <Footer />
