@@ -47,14 +47,13 @@ const Header = () => {
         <div className='flex justify-between items-center px-22 py-2 shadow-md'>
             <div>
                 <Link to="/">
-                    <img src={logo} alt="logo" className='w-20 h-20' />
+                    <img src={logo} alt="logo" className='w-20 h-20' loading="lazy" />
                 </Link>
             </div>
             <nav>
                 <ul className='flex justify-between items-center gap-8 text-xl font-light'>
                     <li> <Link to="/">Inicio</Link></li>
                     <li> <Link to="/products">Productos</Link></li>
-                    <li> <Link to="/offers">Ofertas</Link></li>
                     {isAdmin && <li> <Link to="/admin">Administrador</Link></li>}
                 </ul>
             </nav>

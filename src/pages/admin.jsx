@@ -5,6 +5,7 @@ import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
 import { getDoc } from 'firebase/firestore';
+import Swal from 'sweetalert2';
 
 const Admin = () => {
   // Hooks que siempre se ejecutan
@@ -18,9 +19,26 @@ const Admin = () => {
     description: '',
     category: '',
     image: '',
-    stock: ''
+    stock: '',
+    discount: '0'
   });
   const [editingId, setEditingId] = useState(null);
+
+  // Función para obtener productos
+  const fetchProducts = async () => {
+    if (isAdmin) {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'products'));
+        const productsList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setProducts(productsList);
+      } catch (error) {
+        console.error('Error al obtener productos:', error);
+      }
+    }
+  };
 
   // Verificación de admin
   useEffect(() => {
@@ -48,21 +66,6 @@ const Admin = () => {
 
   // Obtener productos solo si es admin
   useEffect(() => {
-    const fetchProducts = async () => {
-      if (isAdmin) {
-        try {
-          const querySnapshot = await getDocs(collection(db, 'products'));
-          const productsList = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-          setProducts(productsList);
-        } catch (error) {
-          console.error('Error al obtener productos:', error);
-        }
-      }
-    };
-
     fetchProducts();
   }, [isAdmin]);
 
@@ -84,14 +87,43 @@ const Admin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Calcular el precio con descuento
+      const priceWithDiscount = formData.discount > 0 
+        ? formData.price * (1 - formData.discount / 100)
+        : formData.price;
+
+      const productData = {
+        ...formData,
+        price: priceWithDiscount,
+        originalPrice: formData.price // Guardamos el precio original
+      };
+
       if (editingId) {
         // Actualizar producto
         const productRef = doc(db, 'products', editingId);
-        await updateDoc(productRef, formData);
+        await updateDoc(productRef, productData);
         setEditingId(null);
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Producto actualizado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#1C2838',
+          background: '#ffffff',
+          color: '#1C2838'
+        });
       } else {
         // Crear nuevo producto
-        await addDoc(collection(db, 'products'), formData);
+        await addDoc(collection(db, 'products'), productData);
+        Swal.fire({
+          title: '¡Éxito!',
+          text: 'Producto agregado exitosamente',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#1C2838',
+          background: '#ffffff',
+          color: '#1C2838'
+        });
       }
       setFormData({
         name: '',
@@ -99,22 +131,63 @@ const Admin = () => {
         description: '',
         category: '',
         image: '',
-        stock: ''
+        stock: '',
+        discount: '0'
       });
       fetchProducts();
     } catch (error) {
       console.error('Error al guardar producto:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'Error al guardar el producto',
+        icon: 'error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#1C2838',
+        background: '#ffffff',
+        color: '#1C2838'
+      });
     }
   };
 
   // Eliminar producto
   const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esta acción",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#1C2838',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      background: '#ffffff',
+      color: '#1C2838'
+    });
+
+    if (result.isConfirmed) {
       try {
         await deleteDoc(doc(db, 'products', id));
         fetchProducts();
+        Swal.fire({
+          title: '¡Eliminado!',
+          text: 'El producto ha sido eliminado',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#1C2838',
+          background: '#ffffff',
+          color: '#1C2838'
+        });
       } catch (error) {
         console.error('Error al eliminar producto:', error);
+        Swal.fire({
+          title: 'Error',
+          text: 'Error al eliminar el producto',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#1C2838',
+          background: '#ffffff',
+          color: '#1C2838'
+        });
       }
     }
   };
@@ -203,6 +276,18 @@ const Admin = () => {
               required
             />
           </div>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-[#1C2838]">Descuento (%)</label>
+            <input
+              type="number"
+              name="discount"
+              value={formData.discount}
+              onChange={handleChange}
+              min="0"
+              max="100"
+              className="mt-1 block w-full rounded-lg border-2 border-[#1C2838]/20 bg-white px-4 py-2 text-[#1C2838] focus:border-[#1C2838] focus:outline-none focus:ring-1 focus:ring-[#1C2838] transition-all"
+            />
+          </div>
         </div>
         <div className="mt-6 flex gap-4">
           <button
@@ -221,7 +306,8 @@ const Admin = () => {
                   price: '',
                   description: '',
                   image: '',
-                  stock: ''
+                  stock: '',
+                  discount: '0'
                 });
               }}
               className="bg-white text-[#1C2838] border-2 border-[#1C2838] px-6 py-2 rounded-lg hover:bg-[#1C2838]/5 transition-all font-medium"
@@ -233,43 +319,51 @@ const Admin = () => {
       </form>
 
       {/* Tabla de productos */}
-      <div className="rounded-xl shadow-lg overflow-hidden my-24">
-        <h2 className="text-3xl font-semibold mb-6 text-[#1C2838]">Productos</h2>
-        <table className="min-w-full divide-y divide-[#1C2838]/20">
-          <thead className="bg-[#1C2838]">
-            <tr>
-              <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Nombre</th>
-              <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Precio</th>
-              <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Categoria</th>
-              <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Stock</th>
-              <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-[#1C2838]/20">
-            {products.map((product) => (
-              <tr key={product.id} className="hover:bg-[#D6DEE8]/30 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap text-[#1C2838]">{product.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-[#1C2838]">${product.price}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-[#1C2838]">{product.category}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-[#1C2838]">{product.stock}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <button
-                    onClick={() => handleEdit(product)}
-                    className="text-[#1C2838] hover:text-[#1C2838]/80 mr-4 transition-colors"
-                  >
-                    <FiEdit2 className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(product.id)}
-                    className="text-red-600 hover:text-red-700 transition-colors"
-                  >
-                    <FiTrash2 className="w-5 h-5" />
-                  </button>
-                </td>
+      <div className='flex flex-col gap-4 my-24'>
+        <div className='flex justify-start'>
+          <h2 className="text-3xl font-semibold text-[#1C2838]">Productos</h2>
+        </div>
+        <div className="rounded-xl shadow-lg overflow-hidden">
+          <table className="min-w-full divide-y divide-[#1C2838]/20">
+            <thead className="bg-[#1C2838]">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Nombre</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Precio Original</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Descuento</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Precio con Descuento</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Categoria</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Stock</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-white uppercase tracking-wider">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-[#1C2838]/20">
+              {products.map((product) => (
+                <tr key={product.id} className="hover:bg-[#D6DEE8]/30 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap text-[#1C2838]">{product.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-[#1C2838]">${product.originalPrice}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-[#1C2838]">{product.discount > 0 ? `${product.discount}%` : '0%'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-[#1C2838]">${product.price}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-[#1C2838]">{product.category}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-[#1C2838]">{product.stock}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => handleEdit(product)}
+                      className="text-[#1C2838] hover:text-[#1C2838]/80 mr-4 transition-colors"
+                    >
+                      <FiEdit2 className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product.id)}
+                      className="text-red-600 hover:text-red-700 transition-colors"
+                    >
+                      <FiTrash2 className="w-5 h-5" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

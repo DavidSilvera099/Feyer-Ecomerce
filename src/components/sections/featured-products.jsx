@@ -3,6 +3,8 @@ import { collection, getDocs, query, limit } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import ProductCard from '../products/product-card';
 import { Link } from 'react-router-dom';
+
+
 const FeaturedProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
