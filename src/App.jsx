@@ -1,9 +1,12 @@
 import "./App.css";
 import Header from "./components/layouts/header";
 import Footer from "./components/layouts/footer";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
 import SpinnerLoading from "./components/utils/SpinnerLoading";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from './firebase/firebase';
+
 
 // Importación de las páginas principales
 const Home = lazy(() => import("./pages/home"));
@@ -18,7 +21,14 @@ const Checkout = lazy(() => import("./pages/checkout"));
 // Importación de las páginas relacionadas con el carrito y el administrador
 const Admin = lazy(() => import("./pages/admin"));
 
+
 const App = () => {
+  const [user, loading] = useAuthState(auth);
+
+  if (loading) {
+    return <SpinnerLoading />;
+  }
+
   return (
     <Router>
       <Suspense fallback={<SpinnerLoading />}>
@@ -32,7 +42,10 @@ const App = () => {
             <Route path=":id" element={<ProductPage />} />
           </Route>
           <Route path="/admin" element={<Admin />} />
-          <Route path="/checkout" element={<Checkout />} />
+          <Route 
+            path="/checkout" 
+            element={user ? <Checkout /> : <Navigate to="/login" replace />} 
+          />
         </Routes>
       <Footer />
       </Suspense>

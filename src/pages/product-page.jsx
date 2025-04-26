@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { FaMinus } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import { HiShoppingBag } from "react-icons/hi2";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { fetchProduct } from "../firebase/api/products";
 import SpinnerLoading from "../components/utils/SpinnerLoading";
 import { useCart } from "../context/CartContext";
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../firebase/firebase';
+import Swal from 'sweetalert2';
 
 const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
@@ -13,6 +16,8 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const { addToCart, openCart } = useCart();
+  const [user] = useAuthState(auth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProduct({setProduct, setLoading, id});
@@ -44,6 +49,20 @@ const ProductPage = () => {
   };
 
   const handleAddToBag = () => {
+    if (!user) {
+      Swal.fire({
+        title: '¡Ups!',
+        text: 'Debes iniciar sesión para agregar productos al carrito',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#1C2838',
+        background: '#ffffff',
+        color: '#1C2838'
+      });
+      navigate('/login');
+      return;
+    }
+
     if (!product) return;
 
     const productInfo = {
