@@ -41,7 +41,7 @@ const FeaturedProducts = () => {
   return (
     <div className="mx-auto py-4 md:py-8 my-6 md:my-10 flex flex-col gap-6 md:gap-12 px-4 md:px-0">
       <h2 className='text-2xl md:text-4xl text-center text-[#1C2838]'>Productos destacados</h2>
-      <div className='flex justify-center'>
+      <div className='flex justify-center px-8'>
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6'>
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />

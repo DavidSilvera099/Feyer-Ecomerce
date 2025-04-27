@@ -5,11 +5,11 @@ import OffersBanner from '../components/sections/offers-banner'
 
 const home = () => {
   return (
-    <div>
+    <>
       <HeroImage />
       <OffersBanner />
       <FeaturedProducts />
-    </div>
+    </>
   )
 }
 

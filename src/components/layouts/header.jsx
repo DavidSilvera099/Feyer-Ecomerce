@@ -48,6 +48,19 @@ const Header = () => {
     }
   };
 
+  // Controlar el scroll del body cuando el menú está abierto
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isMenuOpen]);
+
   return (
     <header className="relative">
       <div className='flex justify-between items-center px-4 md:px-22 py-2 shadow-md'>
@@ -65,9 +78,17 @@ const Header = () => {
           </Link>
         </div>
 
+        {/* Fondo con opacidad para el menú móvil */}
+        <div 
+          className={`fixed top-[80px] left-0 right-0 bottom-0 bg-black transition-opacity duration-300 z-40 ${
+            isMenuOpen ? 'opacity-50' : 'opacity-0 pointer-events-none'
+          }`}
+          onClick={() => setIsMenuOpen(false)}
+        />
+
         {/* Menú de navegación */}
-        <nav className={`${isMenuOpen ? 'block' : 'hidden'} md:block absolute md:relative top-full left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none z-50`}>
-          <ul className='flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8 text-xl font-light p-4 md:p-0'>
+        <nav className={`${isMenuOpen ? 'block' : 'hidden'} md:block absolute md:relative top-full left-0 w-full md:w-auto bg-white md:bg-transparent shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:shadow-none z-50`}>
+          <ul className='flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8 text-xl font-light px-4 pt-4 pb-8 md:px-0 md:pt-0 md:pb-0'>
             <li>
               <Link 
                 to="/" 

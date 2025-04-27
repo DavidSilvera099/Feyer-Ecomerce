@@ -14,8 +14,8 @@ const Login = lazy(() => import("./components/auth/login"));
 const Register = lazy(() => import("./components/auth/register"));
 
 // Importación de las páginas relacionadas con productos
-const Products = lazy(() => import("./pages/products"));
-const ProductPage = lazy(() => import("./pages/product-page"));
+const AllProducts = lazy(() => import("./pages/all-products"));
+const MainProduct = lazy(() => import("./pages/main-product"));
 const Checkout = lazy(() => import("./pages/checkout"));
 
 // Importación de las páginas relacionadas con el carrito y el administrador
@@ -38,8 +38,8 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/products">
-            <Route index element={<Products />} />
-            <Route path=":id" element={<ProductPage />} />
+            <Route index element={<AllProducts />} />
+            <Route path=":id" element={<MainProduct />} />
           </Route>
           <Route path="/admin" element={<Admin />} />
           <Route 
